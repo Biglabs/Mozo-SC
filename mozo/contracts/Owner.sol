@@ -12,4 +12,8 @@ contract Owner {
     * @return The owner of the smart contract
     */
     function owner() public view returns (address);
+    
+    //check address is a valid owner (owner or coOwner)
+    function isValidOwner(address _address) public view returns(bool);
+
 }

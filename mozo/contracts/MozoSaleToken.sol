@@ -2,7 +2,7 @@ pragma solidity 0.4.23;
 
 import "../../open-zeppelin/contracts/token/ERC20/BasicToken.sol";
 import "./OwnerERC20.sol";
-import "./ChainOwner.sol";
+import "./ChainCoOwner.sol";
 import "./ICO.sol";
 import "./Timeline.sol";
 import "./Upgradable.sol";
@@ -12,7 +12,7 @@ import "./Upgradable.sol";
  * @author Biglabs Pte. Ltd.
  */
  
-contract MozoSaleToken is BasicToken, Timeline, ChainOwner, ICO {
+contract MozoSaleToken is BasicToken, Timeline, ChainCoOwner, ICO {
     using SafeMath for uint;
 
     //sale token name, use in ICO phase only
@@ -40,8 +40,8 @@ contract MozoSaleToken is BasicToken, Timeline, ChainOwner, ICO {
      * Only onwer or smart contract of the same owner in chain.
     */
     modifier onlySameChain() {
-        //if this function is called manually then msg.sender == owner
-        if (msg.sender != owner()) {
+        //check if function not called by owner or coOwner
+        if (!isValidOwner(msg.sender)) {
             //require this called from smart contract
             ChainOwner sm = ChainOwner(msg.sender);
             //this will throw exception if not
@@ -56,6 +56,7 @@ contract MozoSaleToken is BasicToken, Timeline, ChainOwner, ICO {
     /**
      * @notice owner should transfer to this smart contract {_supply} Mozo tokens manually
      * @param _mozoToken Mozo token smart contract
+     * @param _coOwner Array of coOwner
      * @param _supply Total number of tokens = No. tokens * 10^decimals = No. tokens * 100
      * @param _rate number of wei to buy 0.01 Mozo sale token
      * @param _openingTime The opening time in seconds (unix Time)
@@ -63,13 +64,14 @@ contract MozoSaleToken is BasicToken, Timeline, ChainOwner, ICO {
      */
     function MozoSaleToken(
         OwnerERC20 _mozoToken,
+        address[] _coOwner,
         uint _supply,
         uint _rate,
         uint _openingTime,
         uint _closingTime
     )
         public
-        ChainOwner(_mozoToken)
+        ChainCoOwner(_mozoToken, _coOwner)
         Timeline(_openingTime, _closingTime)
         onlyOwner()
     {
@@ -244,5 +246,8 @@ contract MozoSaleToken is BasicToken, Timeline, ChainOwner, ICO {
                 parent.transfer(ad, b);
             }
         }
+        //transfer remain tokens to owner
+        //for testing only
+        //parent.transfer(owner(), parent.balanceOf(address(this)));
     }
 }

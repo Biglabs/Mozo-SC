@@ -21,8 +21,8 @@ contract Sale is ChainOwner, Closable {
     uint public sold;
 
     /**
-    * @dev Sale constructor
-    * @param _ico ICO smart contract
+     * @dev Sale constructor
+     * @param _ico ICO smart contract
     */
     function Sale(ICO _ico) internal ChainOwner(_ico) onlyOwner() {
         smzoToken = _ico;

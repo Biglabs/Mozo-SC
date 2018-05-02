@@ -23,18 +23,18 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
     uint public minContribution;
 
     //package tokens
-    uint private constant PACKAGE_1 = 1000000;
+    uint private constant PACKAGE_1 = 5000000;
     uint private constant PACKAGE_2 = 10000000;
     uint private constant PACKAGE_3 = 100000000;
     uint private constant PACKAGE_4 = 1000000000;
     uint private constant PACKAGE_5 = 10000000000;
 
     //package tokens
-    uint private constant PACKAGE_1_MINIMUM = 1000000000;
-    uint private constant PACKAGE_2_MINIMUM = 1000000000;
-    uint private constant PACKAGE_3_MINIMUM = 1000000000;
-    uint private constant PACKAGE_4_MINIMUM = 1000000000;
-    uint private constant PACKAGE_5_MINIMUM = 1000000000;
+    uint private constant PACKAGE_1_MINIMUM = 100000000000000000;//0.1 eth
+    uint private constant PACKAGE_2_MINIMUM = 100000000000000000;//0.1 eth
+    uint private constant PACKAGE_3_MINIMUM = 100000000000000000;//0.1 eth
+    uint private constant PACKAGE_4_MINIMUM = 100000000000000000;//0.1 eth
+    uint private constant PACKAGE_5_MINIMUM = 100000000000000000;//0.1 eth
 
     //BONUS PERCENTAGGE
     uint private constant BONUS_PERCENT_LEVEL_1 = 10;

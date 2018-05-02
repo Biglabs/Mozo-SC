@@ -21,7 +21,7 @@ contract ChainOwner is Owner {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == parent.owner());
+        require(parent.isValidOwner(msg.sender));
         _;
     }
 
@@ -30,8 +30,8 @@ contract ChainOwner is Owner {
     }
 
     modifier validOwner(OwnerERC20 _smzoToken) {
-        //if this contract create manually then msg.sender == _smzoToken.owner
-        if (msg.sender != _smzoToken.owner()) {
+        //check if function not called by owner or coOwner
+        if (!parent.isValidOwner(msg.sender)) {
             //require this called from smart contract
             OwnerERC20 ico = OwnerERC20(msg.sender);
             //this will throw exception if not
@@ -41,4 +41,12 @@ contract ChainOwner is Owner {
         }
         _;
     }
+    
+    function isValidOwner(address _address) public view returns(bool) {
+        if (_address == owner()) {
+            return true;
+        }
+        return false;
+    }
+
 }

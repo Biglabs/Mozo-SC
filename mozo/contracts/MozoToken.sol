@@ -26,6 +26,7 @@ contract MozoToken is StandardToken, OwnerERC20 {
         _;
     }
 
+
     /**
      * @notice Should provide _totalSupply = No. tokens * 100
      * @param _totalSupply Number of suply tokens = No. tokens * decimals = No. tokens * 100
@@ -45,4 +46,11 @@ contract MozoToken is StandardToken, OwnerERC20 {
     function owner() public view returns (address) {
         return owner_;
     }
+
+    function isValidOwner(address _address) public view returns(bool) {
+        if (_address == owner_) {
+            return true;
+        }
+        return false;
+    }    
 }
