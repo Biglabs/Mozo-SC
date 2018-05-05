@@ -2,6 +2,7 @@ pragma solidity 0.4.23;
 
 import "../../open-zeppelin/contracts/math/SafeMath.sol";
 import "./Sale.sol";
+import "./ContributionBonus.sol";
 import "./Timeline.sol";
 import "./Agentable.sol";
 import "./Upgradable.sol";
@@ -13,14 +14,11 @@ import "./Upgradable.sol";
  * Owner can upgrade package
  */
  
-contract Referral is Sale, Timeline, Agentable, Upgradable {
+contract Referral is Sale, ContributionBonus, Timeline, Agentable, Upgradable {
     using SafeMath for uint;
 
     //curent level
     uint public level;
-
-    //minimum wei contribution
-    uint public minContribution;
 
     //package tokens
     uint private constant PACKAGE_1 = 5000000;
@@ -28,13 +26,6 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
     uint private constant PACKAGE_3 = 100000000;
     uint private constant PACKAGE_4 = 1000000000;
     uint private constant PACKAGE_5 = 10000000000;
-
-    //package tokens
-    uint private constant PACKAGE_1_MINIMUM = 100000000000000000;//0.1 eth
-    uint private constant PACKAGE_2_MINIMUM = 100000000000000000;//0.1 eth
-    uint private constant PACKAGE_3_MINIMUM = 100000000000000000;//0.1 eth
-    uint private constant PACKAGE_4_MINIMUM = 100000000000000000;//0.1 eth
-    uint private constant PACKAGE_5_MINIMUM = 100000000000000000;//0.1 eth
 
     //BONUS PERCENTAGGE
     uint private constant BONUS_PERCENT_LEVEL_1 = 10;
@@ -64,11 +55,6 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
     uint private constant PACKAGE_4_TOKENS_REQUIRE = PACKAGE_4_TOKENS - PACKAGE_3_TOKENS;
     uint private constant PACKAGE_5_TOKENS_REQUIRE = PACKAGE_5_TOKENS - PACKAGE_4_TOKENS;
 
-    modifier validContribution() {
-        require(msg.value >= minContribution);
-        _;
-    }
-
     modifier canUpgrade() {
         require(level < 5);
         _;
@@ -79,17 +65,22 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
       * @notice owner should transfer to this smart contract getRequiredTokens(1) Mozo sale tokens manually
       * @param _smzoToken ICO smart contract
       * @param _agency Ethereum wallet address of agency
+      * @param  _weiContributionTranches Array of wei contribution tranches
+      * @param _bonusPercentageTranches Array of bonus percentage tranches
       * @param _startTime The opening time in seconds (unix Time)
       * @param _endTime The closing time in seconds (unix Time)
      */
     function Referral(
         ICO _smzoToken,
         address _agency,
+        uint[] _weiContributionTranches,
+        uint[] _bonusPercentageTranches,
         uint _startTime,
         uint _endTime
     )
     public
     Sale(_smzoToken)
+    ContributionBonus(_weiContributionTranches, _bonusPercentageTranches)
     Timeline(_startTime, _endTime)
     Agentable(_agency)
     onlyOwner()
@@ -97,7 +88,6 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
         //check whether owner has enough tokens
         require(_smzoToken.balanceOf(msg.sender) >= getRequiredTokens(1));
         level = 1;
-        minContribution = PACKAGE_1_MINIMUM;
     }
 
 
@@ -114,7 +104,6 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
      */
     function upgrade() public notClosed canUpgrade validOwner(parent) {
         level = level.add(1);
-        minContribution = getMinimumContribution(level);
     }
 
     function getLevel() public view returns (uint) {
@@ -202,26 +191,6 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
         return BONUS_PERCENT_LEVEL_5;
     }
 
-    function getMinimumContribution(uint _level) public pure returns (uint) {
-        if (_level == 1) {
-            return PACKAGE_1_MINIMUM;
-        }
-
-        if (_level == 2) {
-            return PACKAGE_2_MINIMUM;
-        }
-
-        if (_level == 3) {
-            return PACKAGE_3_MINIMUM;
-
-        }
-
-        if (_level == 4) {
-            return PACKAGE_4_MINIMUM;
-        }
-
-        return PACKAGE_5_MINIMUM;
-    }
 
     function getTotalToken(uint _level) public pure returns (uint) {
         if (_level == 1) {
@@ -296,5 +265,17 @@ contract Referral is Sale, Timeline, Agentable, Upgradable {
     function _holdTokens() internal view returns(uint) {
         return getRealBonusPercentage(sold).mul(sold).div(100);
     }
+    
+    /**
+    * @dev Calculate number of tokens based on wei contribution
+    */
+    function _calculateToken() internal view returns (uint) {
+        uint i = _getTranche();
+
+        uint tokenToFund = super._calculateToken();
+        tokenToFund = tokenToFund.add(tokenToFund.mul(bonusPercentageTranches[i]).div(100));
+        return tokenToFund;
+    }
+
 }
 

@@ -42,7 +42,19 @@ c. Specification:
 - After bonus period:
 	+ Minimum contribution
 
-1.5. Presale Agency
+1.5. Investment Bonus
+
+a. Location: mozo\contracts\InvestmentDiscount.sol
+
+b. Usage: Presale and crowd sale
+
+c. Specification:
+- Created once in presale and crowd sale
+- Only owner of parent smart contract (ICO tokens) can create this contract
+- Owner can refill (add more tokens)
+- Bonus based on number of Eth contribution
+
+1.6. Presale Agency
 a. Location: mozo\contracts\Agency.sol
 
 b. Usage: Presale
@@ -55,7 +67,7 @@ c. Specification:
 	=> No. bonus tokens = No. sold tokens * BonusPercentage/100
 - Agency can claim bonus token after ICO ending (if owner did not release)
 
-1.6. Referral
+1.7. Referral
 a. Location: mozo\contracts\Referral.sol
 
 b. Usage: Crowd sale
@@ -64,13 +76,13 @@ c. Specification:
 - Created in crowd sale for each registered agency investors
 - Only owner of parent smart contract (ICO tokens) can create this contract
 - There are 5 package levels:
-	+ 10k tokens
+	+ 50k tokens
 		* Minimum contribution: 1ETH
 		* Bonus: 10%
 	+ 100k tokens
 		* Minimum contribution: 1ETH
 		* Bonus: 12%
-		* required 10k tokens level
+		* required 50k tokens level
 	+ 1m tokens
 		* Minimum contribution: 1ETH
 		* Bonus: 14%
@@ -89,7 +101,7 @@ c. Specification:
 - When releasing,bonus tokens will be transferred to agency
 	=> No. bonus tokens = No. sold tokens * {Bonus percentage level of sold tokens} /100
 
-1.7. Time Lock tokens
+1.8. Time Lock tokens
 a. Location: mozo\contracts\TimeLock.sol
 
 b. Usage: After presale
@@ -100,7 +112,7 @@ c. Specification:
 - When releasing by owner, all tokens will be transferred to beneficiary
 - Agency can claim bonus token after contract ending (if owner did not release)
 
-1.8. Revocable Vested tokens
+1.9. Revocable Vested tokens
 a. Location: mozo\contracts\RevocableVested.sol
 
 b. Usage: After ICO
