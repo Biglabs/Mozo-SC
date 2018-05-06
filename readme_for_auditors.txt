@@ -77,22 +77,22 @@ c. Specification:
 - Only owner of parent smart contract (ICO tokens) can create this contract
 - There are 5 package levels:
 	+ 50k tokens
-		* Minimum contribution: 1ETH
+		* Minimum contribution: 0.1ETH
 		* Bonus: 10%
 	+ 100k tokens
-		* Minimum contribution: 1ETH
+		* Minimum contribution: 0.1ETH
 		* Bonus: 12%
 		* required 50k tokens level
 	+ 1m tokens
-		* Minimum contribution: 1ETH
+		* Minimum contribution: 0.1ETH
 		* Bonus: 14%
 		* required 100k tokens level
 	+ 10m tokens
-		* Minimum contribution: 1ETH
+		* Minimum contribution: 0.1ETH
 		* Bonus: 16%
 		* required 1m tokens level
 	+ 100m tokens
-		* Minimum contribution: 1ETH
+		* Minimum contribution: 0.1ETH
 		* Bonus: 18%
 		* required 10m tokens level
 - Owner can upgrade level
