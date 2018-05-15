@@ -93,6 +93,13 @@ contract MozoSaleToken is BasicToken, Timeline, ChainCoOwner, ICO {
         return rate;
     }
 
+    /**
+     * @dev Set Rate: 
+     * @param _rate Number of wei to buy 0.01 Mozo token
+     */
+    function setRate(uint _rate) public onlyOwner {
+        rate = _rate;
+    }
 
     /**
      * @dev Get flag indicates ICO reached hardcap
@@ -103,6 +110,7 @@ contract MozoSaleToken is BasicToken, Timeline, ChainCoOwner, ICO {
 
     /**
      * @dev Set hardcap is reached
+     * @notice Owner must release all sale smart contracts
      */
     function setReachCapped() public onlyOwner {
         isCapped = true;
@@ -171,7 +179,8 @@ contract MozoSaleToken is BasicToken, Timeline, ChainCoOwner, ICO {
 
     /**
      * @dev Release smart contract
-     */
+     * @notice Owner must release all sale smart contracts
+    */
     function release() public onlyOwner {
         _realease();
     }
