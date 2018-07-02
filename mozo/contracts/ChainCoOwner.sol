@@ -12,6 +12,8 @@ import "./ChainOwner.sol";
 contract ChainCoOwner is ChainOwner {
 
     mapping(address=>bool) internal coOwner;
+    
+    address[] internal coOwnerList;
 
     /**
      * @param _parent The parent smart contract
@@ -21,6 +23,7 @@ contract ChainCoOwner is ChainOwner {
         uint len = _coOwner.length;
         for (uint i=0; i < len; i++) {
             coOwner[_coOwner[i]] = true;
+            coOwnerList.push(_coOwner[i]);
         }
     }
 

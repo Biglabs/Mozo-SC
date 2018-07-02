@@ -15,6 +15,7 @@ contract InvestmentDiscount is Sale, ContributionBonus, Timeline {
 
     /**
      * @notice owner should transfer to this smart contract Mozo sale tokens manually
+     * and add this smart contract to ICO whitelist
      * @param _smzoToken ICO smart contract
      * @param  _weiContributionTranches Array of wei contribution tranches
      * @param _bonusPercentageTranches Array of bonus percentage tranches
