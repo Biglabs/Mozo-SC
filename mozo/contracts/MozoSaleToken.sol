@@ -143,6 +143,22 @@ contract MozoSaleToken is BasicToken, Timeline, ChainCoOwner, ICO {
         addAddressesToWhitelist(_coOwner);
         emit Transfer(0x0, _mozoToken.owner(), totalSupply_);
     }
+    
+    function addCoOwners(address[] _coOwner) public onlyOwner {
+        _addCoOwners(_coOwner);
+    }
+
+    function addCoOwner(address _coOwner) public onlyOwner {
+        _addCoOwner(_coOwner);
+    }
+
+    function disableCoOwners(address[] _coOwner) public onlyOwner {
+        _disableCoOwners(_coOwner);
+    }
+
+    function disableCoOwner(address _coOwner) public onlyOwner {
+        _disableCoOwner(_coOwner);
+    }
 
     /**
      * @dev Get Rate: number of wei to buy 0.01 Mozo token

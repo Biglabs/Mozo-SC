@@ -41,6 +41,13 @@ contract TimeLock is Timeline, ChainOwner, Agentable {
     }
     
     /**
+     * @dev Check whether founder sent token to this smart contract
+    */ 
+    function isValid() public view returns(bool) {
+        return parent.balanceOf(address(this)) >= total;
+    }
+    
+    /**
      * @notice not support payable
     */
     function() public payable {

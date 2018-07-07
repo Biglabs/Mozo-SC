@@ -12,7 +12,7 @@ contract Agentable {
     //address of agency for receiving bonus
     address public agency;
     
-        //make sure not a smart contract
+    //make sure not a smart contract
     modifier onlyWalletAddress(address addr){
         require(addr != address(0x0));
 

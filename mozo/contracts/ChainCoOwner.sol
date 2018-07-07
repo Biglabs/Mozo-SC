@@ -1,3 +1,4 @@
+
 pragma solidity 0.4.23;
 
 import "./OwnerERC20.sol";
@@ -20,11 +21,31 @@ contract ChainCoOwner is ChainOwner {
      * @param _coOwner Array of coOwner
     */
     function ChainCoOwner(OwnerERC20 _parent, address[] _coOwner) ChainOwner(_parent) internal {
+        _addCoOwners(_coOwner);
+    }
+    
+    function _addCoOwners(address[] _coOwner) internal {
         uint len = _coOwner.length;
         for (uint i=0; i < len; i++) {
             coOwner[_coOwner[i]] = true;
             coOwnerList.push(_coOwner[i]);
         }
+    }
+
+    function _addCoOwner(address _coOwner) internal {
+        coOwner[_coOwner] = true;
+        coOwnerList.push(_coOwner);
+    }
+
+    function _disableCoOwners(address[] _coOwner) internal {
+        uint len = _coOwner.length;
+        for (uint i=0; i < len; i++) {
+            coOwner[_coOwner[i]] = false;
+        }
+    }
+
+    function _disableCoOwner(address _coOwner) internal {
+        coOwner[_coOwner] = false;
     }
 
     /**

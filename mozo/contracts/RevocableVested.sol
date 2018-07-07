@@ -60,6 +60,13 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
     }
 
     /**
+     * @dev Check whether founder sent token to this smart contract
+    */ 
+    function isValid() public view returns(bool) {
+        return parent.balanceOf(address(this)) >= total;
+    }
+
+    /**
      * @dev not support payable
     */
     function() public payable {
@@ -83,17 +90,13 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
             token = total;
         }
 
-        //all so we transfer tokens to agency
-        if (token == total) {
-            close();
-            parent.transfer(agency, token);
-            return;            
-        }
-        
         close();
+        uint remain = total.sub(token);
         parent.transfer(agency, token);
         //transfer remain tokens to owner
-        parent.transfer(owner(), total.sub(token));
+        if(remain > 0) {
+            parent.transfer(owner(), remain);
+        }
     }
 
     /**
