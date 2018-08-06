@@ -62,7 +62,5 @@ c. Specification:
 	+ After cliff period: linear based on time passed
 - Agency can claim bonus token after contract ending (if owner did not release)
 
-Refer to Mozo-Smart contracts.docx for more information.
-
 2. Note:
 - We try to reduce gas consumption

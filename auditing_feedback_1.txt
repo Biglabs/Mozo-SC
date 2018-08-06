@@ -1,0 +1,93 @@
+1. Please find the list of smart contracts need to be auditted at readme_for_auditors.txt
+(Some smart contracts are obsolete. In this revision, we deleted them)
+
+2. Bugs
+2.1. Critical issues
+
+2.1.1. Closable: close(...)
+Fixed: public -> internal
+
+2.1.2. MozoSaleToken: onlySameChain(...)
+Fixed: Refactor -> MozoSaleToken maintains the list of sale contracts
+
+2.2. Medium severity issues
+
+2.2.1. RevocableVested: revoke(...) 
+This contract is used for vested tokens for employee. Our requirement is the owner can stop vested contract if employee quits company.
+
+2.2.2. MozoSaleToken: release(...)
+This is our requirement because the sale may reach hardcap or owner can release ICO any time
+
+2.2.3. Sale
+2.2.3.1. withdraw(...)
+This function used for withdraw accidentally ETH in smart contract. We think with fallback function, this smart contract never has positive balance.
+2.2.3.2. returnToken(...)
+This is our requirement. Owner can get tokens back for private sale.
+
+2.3. Documentation mismatch
+We think owner and co-onwer should be fair and have the reponsibility with thirdparty/settle bank 's auditing. Our requirement is owner and co-owner can transfer tokens to private sale.
+
+2.4. Possible front-running
+MozoSaleToken: addAddressToWhitelist(...)
+Fixed: We change our process & code:
+- Co-owners and sale smart contracts can receive large amount of tokens
+- Investor in whitelist can receive large amount of tokens
+- Investor in whitelist can transfer large amount of tokens (After buying, they can transfer to anyone)
+
+2.5. Low severity issues
+
+2.5.1. MozoSaleToken
+
+5.1.1. bonusToken(...)
+This function is used for batch transferring bonus. We dont check AML-KYC for bonus tokens.
+
+5.1.2. validOwner(...)
+Referral is obsolete.
+
+2.6. Redundant
+
+2.6.1. Constructors: Fixed (excluded MozoToken.sol because it was deployed on mainnet)
+
+2.6.2. Referral: obsolete
+
+2.6.3. Timeline: may be used in future
+
+2.6.4. MozoSaleToken: 
+import "./Upgradable.sol"; -> Fixed
+transferredIndex = i - 1;  -> Fixed
+return false;              -> Keep logic because transfer return bool
+
+2.6.5. Sale
+ICO public smzoToken; uint public sold; -> Fixed
+ret                                     -> Keep logic because transfer return bool
+
+2.6.6. RevocableVested
+if (token > total)         -> Fixed
+
+2.6.7. Agency: obsolete
+
+2.6.8. ContributionBonus: Fixed
+
+2.6.9. TimelineBonus: obsolete
+
+2.6.10. RevocableVested: Fixed
+
+2.6.11. Fallback default for 0.4.0 : Fixed
+
+2.6.12. MozoSaleToken: onlyWhitelisted(...) -> may be used in future
+
+2.7. Visibility level: Fixed
+
+2.8. Not implemented functionality
+Beside smart contracts, we defined the process for ICO team. They are some steps need to be done manually so we did not implement them in smart contracts
+
+2.9. Fallback function abuse: Fixed
+
+2.10. Deploy & test script: Fixed.
+Note: we had the test cases and performed the testing on our ICO DApp so we develop a simple deployment & test script only.
+
+
+
+
+
+
