@@ -19,25 +19,23 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
 
     //cliff duration
     uint public cliff;
-
-    //end
-    uint public total;
+    
+    //no. tokens claimed
+    uint internal claimedTokens = 0;
 
     /**
       * @dev RevocableVested constructor
-      * @notice owner should transfer to this smart contract {_total} Mozo tokens manually
+      * @notice owner should transfer to this smart contract Mozo tokens manually
       * @param _mozoToken Mozo token smart contract
       * @param _beneficiary Beneficiary address
-      * @param _total Number of tokens = No. tokens * 10^decimals = No. tokens * 100
       * @param _start Starting
       * @param _cliff Cliff duration in seconds
       * @param _vestedDuration Vested duration in seconds
       *
      */
-    function RevocableVested(
+    constructor(
         OwnerERC20 _mozoToken,
         address _beneficiary,
-        uint _total,
         uint _start,
         uint _cliff,
         uint _vestedDuration
@@ -48,29 +46,15 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
         Agentable(_beneficiary)
         onlyOwner()
     {
-        require(cliff >= 0);
-        require(_vestedDuration >= 0);
-        require(_total > 0);
-        //check whether owner has enough tokens
-        require(_mozoToken.balanceOf(msg.sender) >= _total);
-        
         cliff = _start.add(_cliff);
         vestedDuration = _vestedDuration;
-        total = _total;
     }
 
     /**
-     * @dev Check whether founder sent token to this smart contract
+     * @dev Get number of tokens
     */ 
-    function isValid() public view returns(bool) {
-        return parent.balanceOf(address(this)) >= total;
-    }
-
-    /**
-     * @dev not support payable
-    */
-    function() public payable {
-        revert();
+    function noTokens() public view returns(uint) {
+        return parent.balanceOf(address(this));
     }
 
     /**
@@ -81,55 +65,92 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
         uint token = _calculateVested();
         //no vested token
         if (token <= 0) {
-            parent.transfer(owner(), total);
-            close();
+            parent.transfer(owner(), noTokens());
+            _close();
             return;
         }
         
-        if (token > total) {
-            token = total;
-        }
-
-        close();
-        uint remain = total.sub(token);
+        _close();
+        uint remain = noTokens().sub(token);
         parent.transfer(agency, token);
         //transfer remain tokens to owner
         if(remain > 0) {
             parent.transfer(owner(), remain);
         }
     }
+    
+    /**
+     * @dev Get no. tokens claimed in advance
+    */
+    function getClaimedTokens() public view returns(uint) {
+        return claimedTokens;
+    }
+    
+    /**
+     * @dev Beneficiary claim token in advance
+     * @notice Consider whether we support this
+    */
+    function claimAdvance() public notClosed onlyAgency returns(uint) {
+        uint token = _calculateVested();
+        //no vested token
+        if (token <= 0) {
+            return 0;
+        }
+        
+        claimedTokens = claimedTokens.add(token);
+        parent.transfer(agency, token);
+        return token;
+    }
+
 
     /**
      * @dev Beneficiary claim token if not revoked
      * @notice Consider whether we support this
     */
     function claim() public notClosed isEnded onlyAgency {
-        close();
-        parent.transfer(agency, total);
+        _close();
+        parent.transfer(agency, noTokens());
+    }
+
+    /**
+     * @dev Transfers the current balance to the owner and terminates the contract.
+    */
+    function destroy() onlyOwner requireClosed public {
+        selfdestruct(owner());
     }
 
     /**
      * @dev Calculate number of vested token
      * 
     */
-    function _calculateVested() internal view returns (uint) {
+
+    function _calculateVested(uint _noTokens, uint _cliff, uint _vestedDuration, uint _time, uint _claimedTokens) public pure returns(uint) {
         //before cliff period, so zero token
-        if (now < cliff) {
+        if (_time < _cliff) {
             return 0;
         }
         
         //without vested time, all tokens
-        if (vestedDuration == 0) {
-            return total;
+        if (_vestedDuration == 0) {
+            return _noTokens.sub(_claimedTokens);
         }
 
-        uint time = now.sub(cliff);
+        uint t = _time.sub(_cliff);
         //after vested time, all tokens
-        if (time > vestedDuration) {
-            return total;
+        if (t > _vestedDuration) {
+            return _noTokens.sub(_claimedTokens);
         }
 
         //linear with time passed
-        return time.mul(total).div(vestedDuration);
+        return t.mul(_noTokens).div(_vestedDuration).sub(_claimedTokens);
+        
+    }
+    
+    /**
+     * @dev Calculate number of vested token
+     * 
+    */
+    function _calculateVested() internal view returns (uint) {
+        return _calculateVested(noTokens(), cliff, vestedDuration, now, getClaimedTokens());
     }
 }

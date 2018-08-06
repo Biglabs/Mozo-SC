@@ -32,7 +32,7 @@ contract Agentable {
         _;
     }
     
-    function Agentable(address _agency) internal onlyWalletAddress(_agency) {
+    constructor(address _agency) internal onlyWalletAddress(_agency) {
         agency = _agency;
     }
 }

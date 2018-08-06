@@ -15,16 +15,16 @@ contract Sale is ChainOwner, Closable {
     using SafeMath for uint;
 
     //Sale Token ref
-    ICO public smzoToken;
+    ICO internal smzoToken;
     
     //Sold tokens
-    uint public sold;
+    uint internal sold;
 
     /**
      * @dev Sale constructor
      * @param _ico ICO smart contract
     */
-    function Sale(ICO _ico) internal ChainOwner(_ico) onlyOwner() {
+    constructor(ICO _ico) internal ChainOwner(_ico) onlyOwner() {
         smzoToken = _ico;
     }
 
@@ -32,6 +32,7 @@ contract Sale is ChainOwner, Closable {
     * @dev Fall back function ~ buyToken
     */
     function() public payable {
+        require(msg.data.length == 0);
         buyToken();
     }
 
@@ -135,6 +136,13 @@ contract Sale is ChainOwner, Closable {
         //default 
         //Noop
     }
+    
+    /**
+     * @dev Transfers the current balance to the owner and terminates the contract.
+    */
+    function destroy() onlyOwner requireClosed public {
+        selfdestruct(owner());
+    }
 
     /**
     * @dev Release the contract
@@ -143,6 +151,6 @@ contract Sale is ChainOwner, Closable {
         _widthdraw();
         _bonusProcess();
         _returnToken(noTokens());
-        close();
+        _close();
     }
 }

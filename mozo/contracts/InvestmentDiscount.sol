@@ -22,7 +22,7 @@ contract InvestmentDiscount is Sale, ContributionBonus, Timeline {
      * @param _startTime The opening time in seconds (unix Time)
      * @param _endTime The closing time in seconds (unix Time)
     */
-    function InvestmentDiscount(
+    constructor(
         ICO _smzoToken,
         uint[] _weiContributionTranches,
         uint[] _bonusPercentageTranches,

@@ -41,7 +41,7 @@ contract Timeline {
      * @param _startTime The opening time in seconds (unix Time)
      * @param _endTime The closing time in seconds (unix Time)
      */
-    function Timeline(
+    constructor(
         uint256 _startTime,
         uint256 _endTime
     )

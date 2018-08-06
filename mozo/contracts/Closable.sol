@@ -15,10 +15,15 @@ contract Closable {
         _;
     }
 
+    modifier requireClosed() {
+        require(isClosed);
+        _;
+    }
+
     /**
     * @dev Close this smart contract. Just turn on the flag indicates that smart contract is closed
     */
-    function close() public {
+    function _close() internal {
         isClosed = true;
     }
 }

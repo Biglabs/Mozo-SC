@@ -22,7 +22,7 @@ contract ContributionBonus {
      * @param  _weiContributionTranches Array of wei contribution tranches
      * @param _bonusPercentageTranches Array of bonus percentage tranches
     */
-    function ContributionBonus(
+    constructor(
         uint[] _weiContributionTranches,
         uint[] _bonusPercentageTranches
     )
@@ -33,8 +33,6 @@ contract ContributionBonus {
 		//at least 2 tranches, first tranche is min contribution
 		require(weiLength > 0);
 		require(weiLength == bonusLength);
-	    require(_weiContributionTranches[0] >= 0);
-	    require(_bonusPercentageTranches[0] >= 0);
 
         //require these arrays is sorted
 		for (uint i=0; i < weiLength; i++) {
