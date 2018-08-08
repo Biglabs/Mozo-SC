@@ -56,6 +56,10 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
     function noTokens() public view returns(uint) {
         return parent.balanceOf(address(this));
     }
+    
+    function totalTokens() public view returns(uint) {
+        return parent.balanceOf(address(this)).add(claimedTokens);
+    }
 
     /**
      * @dev Owner revoke contract 
@@ -151,6 +155,6 @@ contract RevocableVested is Timeline, ChainOwner, Closable, Agentable {
      * 
     */
     function _calculateVested() internal view returns (uint) {
-        return _calculateVested(noTokens(), cliff, vestedDuration, now, getClaimedTokens());
+        return _calculateVested(totalTokens(), cliff, vestedDuration, now, getClaimedTokens());
     }
 }
