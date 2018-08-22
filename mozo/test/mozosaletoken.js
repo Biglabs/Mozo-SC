@@ -1,10 +1,10 @@
 let MozoSaleToken = artifacts.require("./MozoSaleToken.sol");
 const totalSupply = 70000000000;
 contract('MozoSaleToken', function (accounts) {
-    it(`should put ${totalSupply} in the first account`, async () => {
+    it(`should put ${totalSupply} - 12000000000 in the first account (because 12000000000 in crowd sale`, async () => {
         const smzo = await MozoSaleToken.deployed();
         const balance = await smzo.balanceOf.call(accounts[0]);
-        assert.equal(balance.valueOf(), totalSupply, `${totalSupply} wasn't in the first account`);
+        assert.equal(balance.valueOf(), totalSupply - 12000000000, `${totalSupply} wasn't in the first account`);
     });
     it("should valid contract info", async () => {
         const smzo = await MozoSaleToken.deployed();
