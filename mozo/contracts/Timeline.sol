@@ -1,4 +1,4 @@
-pragma solidity 0.4.23;
+pragma solidity ^0.4.24;
 
 import "../../open-zeppelin/contracts/math/SafeMath.sol";
 
@@ -31,7 +31,7 @@ contract Timeline {
     }
 
     modifier onlyWhileOpen() {
-        require(now >= startTime && now <= endTime);
+        require(isOpened());
         _;
     }
 
@@ -53,5 +53,8 @@ contract Timeline {
         endTime = _endTime;
     }
 
+    function isOpened() public view returns(bool) {
+        return (now >= startTime && now <= endTime);
+    }
 }
 
