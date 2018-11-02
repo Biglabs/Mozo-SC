@@ -69,4 +69,9 @@ contract OperationHolder is Operationable {
     function getOperation() public view returns(Operationable) {
         return operation;
     }
+    
+    function setOperation(Operationable _operation) public {
+        require(msg.sender == getERC20().owner());
+        operation = _operation;
+    }
 }

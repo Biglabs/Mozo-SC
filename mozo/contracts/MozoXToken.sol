@@ -31,12 +31,11 @@ contract MozoXToken is StandardToken, OwnerERC20 {
 
     /**
      * @notice Should provide _totalSupply = No. tokens * 100
-     * @param _totalSupply Number of suply tokens = No. tokens * decimals = No. tokens * 100
     */
-    constructor(uint256 _totalSupply) public {
+    constructor() public {
         owner_ = msg.sender;
         // constructor
-        totalSupply_ = _totalSupply;
+        totalSupply_ = 50000000000000;
         //assign all tokens to owner
         balances[msg.sender] = totalSupply_;
         emit Transfer(0x0, msg.sender, totalSupply_);
