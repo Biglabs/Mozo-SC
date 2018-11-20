@@ -58,7 +58,7 @@ contract Airdrop is Timeline, OperationHolder {
      * @dev Check whether airdrop is available
      */
 	function isAvailable() public view returns(bool) {
-		return ((noTokens() > airdrop) && isOpened());
+		return ((noTokens() >= airdrop) && isOpened());
 	}
     
     /**
@@ -88,7 +88,6 @@ contract Airdrop is Timeline, OperationHolder {
      * @param _to Address of receiver
      */
 	function _doAirdrop(address _to) internal returns(bool) {
-	    require(noTokens() > airdrop);
 	    if(operation.getERC20().transfer(_to, airdrop)) {
 	        requested = requested + 1;
 	        emit AirdropDone(msg.sender, _to, airdrop);

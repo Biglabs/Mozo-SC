@@ -39,6 +39,13 @@ contract BasicTreasury is OperationHolder, ERC20Exchangable {
     }
 
     /**
+     * @dev Get fee collector
+    */
+    function getFeeCollector() public view returns(address) {
+	    return feeCollector;
+    }
+
+    /**
      * @dev Set fee
      * @param _fee Fee (% if _fixedFee=false, else number of tokens)
     */
@@ -47,6 +54,21 @@ contract BasicTreasury is OperationHolder, ERC20Exchangable {
             require(_fee < MAX_PERCENTAGE_FEE);
         }
         fee = _fee;        
+    }
+    
+    /**
+     * @dev Get fee
+     * @return % if _fixedFee=false, else number of tokens
+    */
+    function getFee() public view returns(uint) {
+        return fee;
+    }
+
+    /**
+     * @dev Check whether this is fixed fee
+    */ 
+    function isFixedFee() public view returns(bool){
+        return fixedFee;
     }
 
     /**
@@ -123,7 +145,7 @@ contract BasicTreasury is OperationHolder, ERC20Exchangable {
      * @param _value Number of tokens
      */
     function soldWithFee(bytes32 _hash, address _from, address _to, uint _value) public onlyOperation returns(bool) {
-        require(_value > minimumTokens());
+        require(_value >= minimumTokens());
         uint f = calculateFee(fixedFee, fee, _value);
         uint noTokens = _value - f;
         operation.getERC20().transfer(feeCollector, f);

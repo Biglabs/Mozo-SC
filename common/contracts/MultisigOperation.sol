@@ -61,7 +61,7 @@ contract MultisigOperation is CheckingAddress{
      * @param _value Number of tokens
     */
     modifier checkSold(bytes32 _hash, address _from, address _to, uint _value, bool _isFee) {
-        require(noTokens() > _value);
+        require(noTokens() >= _value);
         SoldInfo storage s = soldMap[_hash];
         //first signature
         if( s.count == 0) {
